@@ -53,6 +53,8 @@ public class GackWorld extends World {
 		new Witch("Jacob", lund, 2, chamberOfWizards);
 		
 		lounge.gain(new Thing("Karl's glasses"));
+		lund.gain(new Thing("Weights"));
+		lund.gain(new Thing("jump-rope"));
 		
 		library.gain(new Scroll("Scroll of Enlightenment"));
 		String[] someTitles = {"War and Peace", "Iliad", "Collected Works of Rilke"};
