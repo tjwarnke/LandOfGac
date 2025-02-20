@@ -114,10 +114,10 @@ public class Person {
 		thing.setOwner(person);
 		owner.possessions.remove(thing);
 		person.possessions.add(thing);
-		say("I gave " + thing + "to " + person + ".\n" + "Yay!");
+		say(this + " gave " + thing + " to " + person + ".");
 		}
 		else{
-			Utility.displayMessage("I dont have this " + thing + " so I can't give it");
+			Utility.displayMessage(this + " do not have this " + thing + " so I can't give it");
 		}
 	}
 	
