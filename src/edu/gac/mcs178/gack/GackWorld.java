@@ -52,7 +52,7 @@ public class GackWorld extends World {
 		new Witch("Jacob", lund, 2, chamberOfWizards);
 
 		// adding a new PokemonTrainer named Robby
-		new PokemonTrainer("Robby", dormitory,2, pokeball);
+		new PokemonTrainer("Robby", dormitory,2, pokeball, 100);
 		
 		lounge.gain(new Thing("Karl's glasses"));
 		lund.gain(new Thing("Weights"));
