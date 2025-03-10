@@ -7,11 +7,11 @@ import edu.gac.mcs178.gack.Utility;
 
 public class PokemonTrainer extends AutoPerson {
 
-    private Place pond;
+    private Place pokeball;
 
-    public PokemonTrainer(String name, Place place, int threshold, Place pond) {
+    public PokemonTrainer(String name, Place place, int threshold, Place pokeball) {
         super(name, place, threshold);
-        this.pond = pond;
+        this.pokeball = pokeball;
     }
 
     @Override
@@ -26,18 +26,15 @@ public class PokemonTrainer extends AutoPerson {
     }
 
     public void curse(Person person) {
-        say("Hah hah hah, I'm going to turn you into a frog, " + person);
-        turnIntoFrog(person);
-        say("Hee hee " + person + " looks better in green!");
+        say("I'm gonna catch you, Pokemon!");
+        catch_em(person);
+        say("1... 2... Gotcha! " + person + " has been caught!");
     }
 
-    public void turnIntoFrog(Person person) {
+    public void catch_em(Person person) {
         // need to copy person.getPossessions() in order to avoid a ConcurrentModificationException
-        List<Thing> personsPossessions = new ArrayList<Thing>(person.getPossessions());
-        for (Thing thing : personsPossessions) {
-            person.lose(thing);
-        }
-        person.say("Ribbitt!");
-        person.moveTo(pond);
+
+        person.say("No! Let me out of here!");
+        person.moveTo(pokeball);
     }
 }

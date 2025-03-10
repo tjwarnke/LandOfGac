@@ -1,12 +1,6 @@
 package edu.gac.mcs178.gack;
 
-import edu.gac.mcs178.gack.domain.AutoPerson;
-import edu.gac.mcs178.gack.domain.Person;
-import edu.gac.mcs178.gack.domain.Place;
-import edu.gac.mcs178.gack.domain.Scroll;
-import edu.gac.mcs178.gack.domain.Thing;
-import edu.gac.mcs178.gack.domain.Witch;
-import edu.gac.mcs178.gack.domain.Wizard;
+import edu.gac.mcs178.gack.domain.*;
 
 public class GackWorld extends World {
 	
@@ -24,6 +18,11 @@ public class GackWorld extends World {
 		Place dormitory = new Place("Dormitory");
 		Place pond = new Place("Pond");
 		Place lund = new Place("Lund");
+
+		// add a new place called Pokeball
+		// Pokeball links to nowhere because the Pokemon trainer can throw
+		// the Pokeball anywhere, and then that is where the player spawns
+		Place pokeball = new Place("Pokeball");
 
 		lund.addNewNeighbor("southeast", dormitory);
 		dormitory.addNewNeighbor("northwest", lund);
@@ -51,6 +50,9 @@ public class GackWorld extends World {
 		new Witch("Barbara", offices, 3, pond);
 		new Wizard("Elvee", offices, 1, chamberOfWizards);
 		new Witch("Jacob", lund, 2, chamberOfWizards);
+
+		// adding a new PokemonTrainer named Robby
+		new PokemonTrainer("Robby", dormitory,2, pokeball);
 		
 		lounge.gain(new Thing("Karl's glasses"));
 		lund.gain(new Thing("Weights"));
