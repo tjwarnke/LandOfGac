@@ -8,12 +8,14 @@ import java.util.Map;
 import edu.gac.mcs178.gack.Utility;
 
 public class Place {
-	
+
+	private static List<Place> allPlaces = new ArrayList<>(); // Stores all created places
+
 	private String name;
 	private Map<String, Place> neighborMap;
 	private List<Thing> contents;
 	private List<Person> occupants;
-	
+
 	public String getName() { return name; }
 	public void setName(String name) { this.name = name; }
 	public List<Thing> getContents() { return contents; }
@@ -25,20 +27,21 @@ public class Place {
 		this.neighborMap = new HashMap<String, Place>();
 		this.contents = new ArrayList<Thing>();
 		this.occupants = new ArrayList<Person>();
+		allPlaces.add(this); // Register each new place
 	}
-	
+
 	public List<String> exits() {
 		return new ArrayList<String>(neighborMap.keySet());
 	}
-	
+
 	public List<Place> neighbors() {
 		return new ArrayList<Place>(neighborMap.values());
 	}
-	
+
 	public Place neighborTowards(String direction) {
 		return neighborMap.get(direction);
 	}
-	
+
 	public void addNewNeighbor(String direction, Place newNeighbor) {
 		if (exits().contains(direction)) {
 			Utility.displayMessage("there is already a neighbor " + direction + " from " + this);
@@ -46,7 +49,7 @@ public class Place {
 			neighborMap.put(direction, newNeighbor);
 		}
 	}
-	
+
 	public void gain(Thing newItem) {
 		if (contents.contains(newItem)) {
 			Utility.displayMessage(newItem + " is already at " + this);
@@ -54,7 +57,7 @@ public class Place {
 			contents.add(newItem);
 		}
 	}
-	
+
 	public void gain(Person newPerson) {
 		if (occupants.contains(newPerson)) {
 			Utility.displayMessage(newPerson + " is already at " + this);
@@ -62,7 +65,7 @@ public class Place {
 			occupants.add(newPerson);
 		}
 	}
-	
+
 	public void lose(Thing item) {
 		if (contents.contains(item)) {
 			contents.remove(item);
@@ -70,7 +73,7 @@ public class Place {
 			Utility.displayMessage(item + " is not at " + this);
 		}
 	}
-	
+
 	public void lose(Person person) {
 		if (occupants.contains(person)) {
 			occupants.remove(person);
@@ -78,9 +81,26 @@ public class Place {
 			Utility.displayMessage(person + " is not at " + this);
 		}
 	}
-	
+
+	public static List<Place> getAllPlaces() {
+		return new ArrayList<>(allPlaces); // Returns a copy to prevent modification
+	}
+
 	@Override
 	public String toString() {
 		return name;
+	}
+	private List<Pokemon> wildPokemon = new ArrayList<>();
+
+	public void addWildPokemon(Pokemon pokemon) {
+		wildPokemon.add(pokemon);
+	}
+
+	public void removeWildPokemon(Pokemon pokemon) {
+		wildPokemon.remove(pokemon);
+	}
+
+	public List<Pokemon> getWildPokemon() {
+		return new ArrayList<>(wildPokemon);
 	}
 }
