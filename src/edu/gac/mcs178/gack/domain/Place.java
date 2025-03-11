@@ -90,4 +90,17 @@ public class Place {
 	public String toString() {
 		return name;
 	}
+	private List<Pokemon> wildPokemon = new ArrayList<>();
+
+	public void addWildPokemon(Pokemon pokemon) {
+		wildPokemon.add(pokemon);
+	}
+
+	public void removeWildPokemon(Pokemon pokemon) {
+		wildPokemon.remove(pokemon);
+	}
+
+	public List<Pokemon> getWildPokemon() {
+		return new ArrayList<>(wildPokemon);
+	}
 }

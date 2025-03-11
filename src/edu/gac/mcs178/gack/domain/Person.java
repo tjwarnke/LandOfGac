@@ -7,7 +7,7 @@ import edu.gac.mcs178.gack.Utility;
 
 public class Person {
 	
-	private String name;
+	public String name;
 	private Place place;
 	private List<Thing> possessions;
 	

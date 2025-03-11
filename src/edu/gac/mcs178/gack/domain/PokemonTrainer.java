@@ -8,8 +8,8 @@ import java.util.Random;
 public class PokemonTrainer extends AutoPerson {
 
     private Place pokeball;
-    private float catchRate; // Percentage chance (0-100) of catching a person
-    private List<CaughtPerson> caughtPeople; // Track people who have been caught
+    private float catchRate;
+    private List<CaughtPerson> caughtPeople;
 
     private static class CaughtPerson {
         Person person;
@@ -34,54 +34,62 @@ public class PokemonTrainer extends AutoPerson {
         List<CaughtPerson> toRelease = new ArrayList<>();
         for (CaughtPerson cp : caughtPeople) {
             cp.turnsCaught++;
-            if (cp.turnsCaught >= 1) { // Release after one turn
+            if (cp.turnsCaught >= 1) {
                 throw_em(cp.person);
                 toRelease.add(cp);
             }
         }
         caughtPeople.removeAll(toRelease);
 
-        // Attempt to catch someone if no one is being released
+        // Check for people to catch
         List<Person> others = otherPeopleAtSamePlace();
         if (!others.isEmpty()) {
             Person victim = others.get(Utility.randInt(others.size()));
-            curse(victim);
-        } else {
-            super.act();
+            catchTarget(victim);
+            return;
         }
+
+        // Check for wild Pokémon
+        List<Pokemon> wildPokemon = getPlace().getWildPokemon();
+        if (!wildPokemon.isEmpty()) {
+            Pokemon target = wildPokemon.get(Utility.randInt(wildPokemon.size()));
+            catchTarget(target);
+            return;
+        }
+
+        // Default action
+        super.act();
     }
 
-    public void curse(Person person) {
-        say("I'm gonna catch you, Pokemon " + person + "!");
-        person.say("No! I've gotta get out of here!");
+    public void catchTarget(Person target) {
+        say("I'm gonna catch you, " + target.getName() + "!");
+        target.say("No! I've gotta get out of here!");
 
-        // Determine if the catch is successful
         boolean caught = Utility.randInt(100) < this.catchRate;
 
         if (caught) {
-            catch_em(person);
-            say("1... 2... Gotcha! I caught a wild " + person + "!");
+            catch_em(target);
+            say("1... 2... Gotcha! I caught a wild " + target.getName() + "!");
         } else {
-            person.say("Yes, I'm free!");
-            say("Ah, he got away!");
+            target.say("Yes, I'm free!");
+            say("Ah, they got away!");
         }
     }
 
-    public void catch_em(Person person) {
-        person.say("Ah, I've been caught!");
-        person.moveTo(pokeball);
-        caughtPeople.add(new CaughtPerson(person)); // Track caught person
+    public void catch_em(Person target) {
+        target.say("Ah, I've been caught!");
+        target.moveTo(pokeball);
+        caughtPeople.add(new CaughtPerson(target));
     }
 
-    public void throw_em(Person person) {
-        say("Now... Pokemon, I choose you!");
+    public void throw_em(Person target) {
+        say("Now... " + target.getName() + ", I choose you!");
 
-        // Move to a random place
-        List<Place> allPlaces = Place.getAllPlaces(); // Assuming there's a way to retrieve all places
+        List<Place> allPlaces = Place.getAllPlaces();
         if (!allPlaces.isEmpty()) {
             Place randomPlace = allPlaces.get(Utility.randInt(allPlaces.size()));
-            person.moveTo(randomPlace);
-            person.say("I'm free! But where am I?");
+            target.moveTo(randomPlace);
+            target.say("I'm free! But where am I?");
         }
     }
 }
