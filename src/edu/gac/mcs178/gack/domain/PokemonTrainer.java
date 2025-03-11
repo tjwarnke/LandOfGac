@@ -8,17 +8,40 @@ import java.util.Random;
 public class PokemonTrainer extends AutoPerson {
 
     private Place pokeball;
-    private float catchRate; // a number between 0 and 100 which signifies the % likelihood that a
-    // trainer successfully catches a different person
+    private float catchRate; // Percentage chance (0-100) of catching a person
+    private List<CaughtPerson> caughtPeople; // Track people who have been caught
+
+    private static class CaughtPerson {
+        Person person;
+        int turnsCaught;
+
+        CaughtPerson(Person person) {
+            this.person = person;
+            this.turnsCaught = 0;
+        }
+    }
 
     public PokemonTrainer(String name, Place place, int threshold, Place pokeball, float catchRate) {
         super(name, place, threshold);
         this.pokeball = pokeball;
         this.catchRate = catchRate;
+        this.caughtPeople = new ArrayList<>();
     }
 
     @Override
     public void act() {
+        // Check if any caught person should be released
+        List<CaughtPerson> toRelease = new ArrayList<>();
+        for (CaughtPerson cp : caughtPeople) {
+            cp.turnsCaught++;
+            if (cp.turnsCaught >= 1) { // Release after one turn
+                throw_em(cp.person);
+                toRelease.add(cp);
+            }
+        }
+        caughtPeople.removeAll(toRelease);
+
+        // Attempt to catch someone if no one is being released
         List<Person> others = otherPeopleAtSamePlace();
         if (!others.isEmpty()) {
             Person victim = others.get(Utility.randInt(others.size()));
@@ -32,40 +55,33 @@ public class PokemonTrainer extends AutoPerson {
         say("I'm gonna catch you, Pokemon " + person + "!");
         person.say("No! I've gotta get out of here!");
 
-        // add an element of randomness to the catch, so sometimes it works and sometimes
-        // it doesn't
+        // Determine if the catch is successful
+        boolean caught = Utility.randInt(100) < this.catchRate;
 
-        // create variables needed for the randomization
-        Random rand = new Random();
-        boolean caught = false;
-
-        // calculate if the catch happens or not
-        int r = rand.nextInt(101);
-        if (r < this.catchRate) caught = true;
-
-        // if
         if (caught) {
             catch_em(person);
             say("1... 2... Gotcha! I caught a wild " + person + "!");
-            throw_em(person);
-        }
-
-        else {
+        } else {
             person.say("Yes, I'm free!");
             say("Ah, he got away!");
         }
     }
 
     public void catch_em(Person person) {
-        // need to copy person.getPossessions() in order to avoid a ConcurrentModificationException
-
         person.say("Ah, I've been caught!");
         person.moveTo(pokeball);
+        caughtPeople.add(new CaughtPerson(person)); // Track caught person
     }
 
     public void throw_em(Person person) {
-        // TODO move the person to a new random place after moving them to the pokeball
-        say("Now... Pokemon, I chose you!");
-        // person.moveTo();
+        say("Now... Pokemon, I choose you!");
+
+        // Move to a random place
+        List<Place> allPlaces = Place.getAllPlaces(); // Assuming there's a way to retrieve all places
+        if (!allPlaces.isEmpty()) {
+            Place randomPlace = allPlaces.get(Utility.randInt(allPlaces.size()));
+            person.moveTo(randomPlace);
+            person.say("I'm free! But where am I?");
+        }
     }
 }
